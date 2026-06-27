@@ -2,7 +2,7 @@ import torch
 
 
 def mae_loss(input, output):
-    return torch.mean(torch.sum(torch.abs(input - output), dim=(1, 2, 3)))
+    return torch.mean(torch.mean(torch.abs(input - output), dim=(1, 2, 3)))
 
 
 def KL_loss(mu, log_var):
