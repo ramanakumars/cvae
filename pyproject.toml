@@ -15,18 +15,24 @@ cpu = [
     "torchvision==0.26.0+cpu",
     "lightning>=2.6.5",
     "transformers>=5.12.1",
+    "torchinfo>=1.8.0",
+    "datasets>=5.0.0",
 ]
 cu126 = [
     "torch==2.11.0+cu126",
     "torchvision==0.26.0+cu126",
     "lightning>=2.6.5",
     "transformers>=5.12.1",
+    "torchinfo>=1.8.0",
+    "datasets>=5.0.0",
 ]
 cu128 = [
     "torch==2.11.0+cu128",
     "torchvision==0.26.0+cu128",
     "lightning>=2.6.5",
     "transformers>=5.12.1",
+    "torchinfo>=1.8.0",
+    "datasets>=5.0.0",
 ]
 
 [tool.uv]
