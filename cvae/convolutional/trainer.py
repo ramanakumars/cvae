@@ -2,7 +2,7 @@ import lightning as L
 import torch
 from torch.optim.lr_scheduler import ExponentialLR
 
-from .losses import (
+from ..losses import (
     KL_loss,
     classification_loss,
     contractive_loss,

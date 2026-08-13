@@ -11,13 +11,15 @@ def sample(mu, log_var):
 
 
 class Encoder(nn.Module):
-    def __init__(self, conv_filt, hidden, input_size, input_channels=3):  # conv_filt
+    def __init__(
+        self, conv_filt, hidden, input_size, input_channels=3, num_downsample_layers=2
+    ):  # conv_filt
         super().__init__()
 
         self.layers = []
 
         conv_filts = [32, 64]  # list of filters to run through later
-        for i in range(2):
+        for i in range(num_downsample_layers):
             conv_filts.append(conv_filt)
 
         # make layers
@@ -84,7 +86,15 @@ class Encoder(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self, conv_filt, hidden, input_size, input_channels, output_channels):
+    def __init__(
+        self,
+        conv_filt,
+        hidden,
+        input_size,
+        input_channels,
+        output_channels,
+        num_downsample_layers,
+    ):
         super().__init__()
         self.layers = []
 
@@ -108,7 +118,7 @@ class Decoder(nn.Module):
             filt = hidden[i]
 
         conv_filts = []
-        for i in range(1):
+        for i in range(num_downsample_layers - 1):
             conv_filts.append(conv_filt)
         conv_filts.extend([64, 32])
 
@@ -145,13 +155,15 @@ class VAEConfig(PretrainedConfig):
         input_size: int = 96,
         input_channels: int = 3,
         conv_filts: int = 128,
-        hidden: list[int] = [64, 8],
+        hidden: tuple[int] = (64, 8),
+        num_downsample_layers: int = 2,
         **kwargs,
     ):
         self.input_size = input_size
         self.input_channels = input_channels
         self.conv_filts = conv_filts
         self.hidden = hidden
+        self.num_downsample_layers = num_downsample_layers
         super().__init__(**kwargs)
 
 
@@ -161,7 +173,11 @@ class VAE(PreTrainedModel):
     def __init__(self, config: VAEConfig):
         super().__init__(config)
         self.encoder = Encoder(
-            config.conv_filts, config.hidden, config.input_size, config.input_channels
+            config.conv_filts,
+            config.hidden,
+            config.input_size,
+            config.input_channels,
+            config.num_downsample_layers,
         )
         self.decoder = Decoder(
             config.conv_filts,
@@ -169,6 +185,7 @@ class VAE(PreTrainedModel):
             self.encoder.final_size,
             config.hidden[-1],
             config.input_channels,
+            config.num_downsample_layers,
         )
 
     def forward(self, x):
